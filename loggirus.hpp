@@ -1,6 +1,7 @@
 #ifndef LOGGIRUS_H
 #define LOGGIRUS_H
 
+#include "concurrent_queue.hpp"
 #include <format>
 #include <iostream>
 #include <vector>
@@ -16,22 +17,54 @@ enum level
   ERROR,
 };
 
-class log
+class Log
 {
 public:
-  log() : m_log_level(level::DEBUG) {};
-  log(level l) : m_log_level(l) {};
+  Log() : m_log_level(level::DEBUG) {};
+  Log(level l) : m_log_level(l) {};
 
-  template <class... Args> void info(std::format_string<Args...> fmt, Args &&...args)
+  // to be
+  template <class... Args>
+  void debug(std::format_string<Args...> fmt, Args &&...args)
   {
-    if (m_log_level > level::INFO)
-      return;
+    log<level::DEBUG>(fmt, std::forward<Args>(args)...);
+  }
 
-    std::string message = std::format(fmt, std::forward<Args>(args)...);
+  template <class... Args>
+  void info(std::format_string<Args...> fmt, Args &&...args)
+  {
+    log<level::INFO>(fmt, std::forward<Args>(args)...);
+  }
+
+  template <class... Args>
+  void warn(std::format_string<Args...> fmt, Args &&...args)
+  {
+    log<level::WARN>(fmt, std::forward<Args>(args)...);
+  }
+
+  template <class... Args>
+  void error(std::format_string<Args...> fmt, Args &&...args)
+  {
+    log<level::ERROR>(fmt, std::forward<Args>(args)...);
+  }
+
+  void test() {
+    std::cout << m_log_queue.pop() << std::endl;
   }
 
 private:
-  level m_log_level;
+  template <level L, class... Args>
+  void log(std::format_string<Args...> fmt, Args &&...args)
+  {
+    if (m_log_level > L)
+      return;
+
+    std::string message = std::format(fmt, std::forward<Args>(args)...);
+    m_log_queue.push(message);
+  };
+
+  level                        m_log_level;
+  ConcurrentQueue<std::string> m_log_queue {};
 
   // prepending
   std::vector<std::string> m_info_prepend{

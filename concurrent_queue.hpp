@@ -34,9 +34,9 @@ public:
   }
 
 private:
-  std::queue<T>           m_queue;
-  std::mutex              m_mutex;
-  std::condition_variable m_cond;
+  std::queue<T>           m_queue{};
+  std::mutex              m_mutex{};
+  std::condition_variable m_cond{};
 };
 
 #endif // CONCURRENT_QUEUE_HPP
