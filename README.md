@@ -20,3 +20,14 @@ Format is subject to change.
 
 Terminal should support UTF-8 to display the icons properly.
 
+## WIP
+
+- [ ] Read prepend/append log messages from a file.
+- [ ] Add time/date in the prepend.
+- [ ] Add file and line location calling the log. (how am I going to do this? 🫨)
+- [ ] Implement ThreadSafeQueue DS.
+- [ ] Add debug, warn, error methods.
+- [ ] Make repo public.
+- [ ] Test impl in the field.
+- [ ] Add screenshots of the result.
+

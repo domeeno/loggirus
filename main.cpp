@@ -2,7 +2,7 @@
 
 int main()
 {
-  domeeno::log logger;
+  domeeno::log logger(domeeno::level::INFO);
 
   logger.info("Hello, {} {}!", "World", 3);
 
