@@ -4,6 +4,7 @@
 #include "concurrent_queue.hpp"
 #include <format>
 #include <iostream>
+#include <map>
 #include <thread>
 #include <vector>
 
@@ -25,8 +26,7 @@ struct logMessage
 };
 
 class Log
-{
-public:
+{ public:
   Log() : m_log_level(level::DEBUG)
   {
     std::cout << "attempting to start thread." << std::endl;
@@ -90,29 +90,10 @@ private:
       {
         logMessage log_msg = m_log_queue.pop();
 
-        std::string prepend{};
-        std::string append{};
-
-        if (log_msg.l == level::DEBUG)
-        {
-          prepend = m_debug_prepend[rand() % m_debug_prepend.size()];
-          append  = m_debug_append[rand() % m_debug_append.size()];
-        }
-        else if (log_msg.l == level::INFO)
-        {
-          prepend = m_info_prepend[rand() % m_info_prepend.size()];
-          append  = m_info_append[rand() % m_info_append.size()];
-        }
-        else if (log_msg.l == level::WARN)
-        {
-          prepend = m_warn_prepend[rand() % m_warn_prepend.size()];
-          append  = m_warn_append[rand() % m_warn_append.size()];
-        }
-        else if (log_msg.l == level::ERROR)
-        {
-          prepend = m_error_prepend[rand() % m_error_prepend.size()];
-          append  = m_error_append[rand() % m_error_append.size()];
-        }
+        std::string prepend =
+          m_log_prepends[log_msg.l][static_cast<unsigned long>(rand()) % m_log_prepends[log_msg.l].size()];
+        std::string append =
+          m_log_appends[log_msg.l][static_cast<unsigned long>(rand()) % m_log_appends[log_msg.l].size()];
 
         std::cout << prepend << log_msg.message << append << std::endl;
       }
@@ -121,52 +102,65 @@ private:
 
   level                       m_log_level;
   ConcurrentQueue<logMessage> m_log_queue{};
-  std::thread                 m_process_thread;
+  std::thread                 m_process_thread{};
   bool                        m_running{true};
 
   // prepending
-  std::vector<std::string> m_info_prepend{
-    "ℹ️: [INF] ",
-    "🤔: [INF] ",
-  };
-  std::vector<std::string> m_debug_prepend{
-    "🔧: [DEB] ",
-    "🤖: [DEB] ",
-    "🛠️: [DEB] ",
-    "🤓: [DEB] ",
-  };
-  std::vector<std::string> m_error_prepend{
-    "💢: [ERR] ",
-    "🧑‍🚒: [ERR] ",
-    "🤦: [ERR] ",
-  };
-  std::vector<std::string> m_warn_prepend{
-    "⚠️: [WRN] ",
+  std::map<level, std::vector<std::string>> m_log_prepends = {
+    {level::INFO,
+     {
+       "ℹ️: [INF] :",
+       "🤔: [INF] :",
+     }},
+    {level::DEBUG,
+     {
+       "🔧: [DEB] :",
+       "🤖: [DEB] :",
+       "🛠️: [DEB] :",
+       "🤓: [DEB] :",
+     }},
+    {level::ERROR,
+     {
+       "💢: [ERR] :",
+       "🧑‍🚒: [ERR] :",
+       "🤦: [ERR] :",
+     }},
+    {level::WARN,
+     {
+       "⚠️: [WRN] :",
+     }},
   };
 
   // appending
-  std::vector<std::string> m_info_append{
-    " - so far so good.",
-    " - I hope this helps.",
-    " - as it should.",
-  };
-  std::vector<std::string> m_debug_append{
-    " - mathematical, don't you agree?.",
-    " - algebraic, CS degree.",
-    " - bleep-blop.",
-  };
-  std::vector<std::string> m_error_append{
-    " - buns. As in butts.",
-    " - oh nooo.",
-    " - maybe ask AI? There is no shame in that.",
-    " - be level headed.",
-    " - the answer is within you... or online.",
-  };
-  std::vector<std::string> m_warn_append{
-    " - who uses warn level anyway? Nerd.",
-    " - something's off I can feel it.",
-    " - should we worry about this?",
-    " - hmm a warning? probably nothing.",
+  std::map<level, std::vector<std::string>> m_log_appends{
+    {level::INFO,
+     {
+       " - so far so good.",
+       " - I hope this helps.",
+       " - as it should.",
+     }},
+    {level::DEBUG,
+     {
+       " - mathematical, don't you agree?.",
+       " - algebraic, CS degree.",
+       " - bleep-blop.",
+     }},
+    {level::ERROR,
+     {
+       " - buns. As in butts.",
+       " - oh nooo.",
+       " - maybe ask AI? There is no shame in that.",
+       " - would you like to play some Baldur's Gate?",
+       " - be level headed.",
+       " - the answer is within you... or online.",
+     }},
+    {level::WARN,
+     {
+       " - who uses warn level anyway? Nerd.",
+       " - something's off I can feel it.",
+       " - should we worry about this?",
+       " - hmm a warning? probably nothing.",
+     }},
   };
 };
 

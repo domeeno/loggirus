@@ -27,6 +27,7 @@ Terminal should support UTF-8 to display the icons properly.
 - [ ] Add file and line location calling the log. (how am I going to do this? 🫨)
 - [ ] Add thread calling the log. (how am I going to do this? 🫨)
 - [ ] Implement logging on a peer thread.
+- [ ] Make sure it doesn't interfere with cout of main app. (how am I going to do this? 🫨).
 - [x] Implement ThreadSafeQueue DS.
 - [x] Add debug, warn, error methods.
 - [ ] Make repo public.
