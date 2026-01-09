@@ -9,14 +9,14 @@ template <typename T>
 class ConcurrentQueue
 {
 public:
-  void push(T item)
+  void push(const T item)
   {
     std::unique_lock<std::mutex> lock(m_mutex);
     m_queue.push(std::move(item));
     m_cond.notify_one();
   }
 
-  T pop()
+  const T pop()
   {
     std::unique_lock<std::mutex> lock(m_mutex);
     m_cond.wait(lock, [this]() { return !m_queue.empty(); });

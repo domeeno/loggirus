@@ -26,10 +26,11 @@ Terminal should support UTF-8 to display the icons properly.
 - [ ] Add time/date in the prepend.
 - [ ] Add file and line location calling the log. (how am I going to do this? 🫨)
 - [ ] Add thread calling the log. (how am I going to do this? 🫨)
-- [ ] Implement logging on a peer thread.
+- [x] Implement logging on a peer thread.
 - [ ] Make sure it doesn't interfere with cout of main app. (how am I going to do this? 🫨).
 - [x] Implement ThreadSafeQueue DS.
 - [x] Add debug, warn, error methods.
+- [ ] Improve randomness thing (doesn't work currently).
 - [ ] Make repo public.
 - [ ] Test impl in the field.
 - [ ] Add screenshots of the result.
