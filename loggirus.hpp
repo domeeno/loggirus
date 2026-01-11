@@ -1,52 +1,30 @@
 #ifndef LOGGIRUS_H
 #define LOGGIRUS_H
 
-#include "concurrent_queue.hpp"
+#include "level.hpp"
+#include "worker_thread.hpp"
 #include <format>
-#include <iostream>
 #include <map>
-#include <thread>
 #include <vector>
 
 namespace domeeno
 {
-
-enum class Level
-{
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-};
-
-struct LogMessage
-{
-  Level       lvl;
-  std::string message;
-};
 
 class Log
 {
 public:
   Log() : m_log_level(Level::DEBUG)
   {
-    m_process_thread = std::thread(&Log::process, this);
+    m_worker_thread.start();
   };
 
   Log(Level l) : m_log_level(l)
   {
-    m_process_thread = std::thread(&Log::process, this);
+    m_worker_thread.start();
   };
 
   ~Log()
   {
-    m_running = false;
-    m_process_thread.join();
-
-    while (!m_log_queue.empty())
-    {
-      stdout(m_log_queue.pop());
-    }
   }
 
   template <class... Args>
@@ -80,66 +58,42 @@ private:
     if (m_log_level > L)
       return;
 
-    std::string message = std::format(fmt, std::forward<Args>(args)...);
-    m_log_queue.push({L, std::move(message)});
-    m_cond.notify_one();
+    std::string log_text = std::format(fmt, std::forward<Args>(args)...);
+
+    m_worker_thread.publish({L, log_text});
   };
 
-  void process()
-  {
-    while (m_running)
-    {
-      std::unique_lock<std::mutex> lock(m_mutex);
-      m_cond.wait(lock, [this]() { return !m_log_queue.empty(); });
-      stdout(m_log_queue.pop());
-    }
-  }
-
-  void stdout(LogMessage log_msg)
-  {
-    std::string prepend =
-      m_log_prepends[log_msg.lvl][static_cast<unsigned long>(rand()) % m_log_prepends[log_msg.lvl].size()];
-    std::string append =
-      m_log_appends[log_msg.lvl][static_cast<unsigned long>(rand()) % m_log_appends[log_msg.lvl].size()];
-
-    std::cout << prepend << log_msg.message << append << std::endl;
-  }
-
-  Level                       m_log_level;
-  ConcurrentQueue<LogMessage> m_log_queue{};
-  std::mutex                  m_mutex{};
-  std::thread                 m_process_thread{};
-  std::condition_variable     m_cond{};
-  bool                        m_running{true};
+  Level        m_log_level;
+  WorkerThread m_worker_thread{};
 
   // prepending
-  std::map<Level, std::vector<std::string>> m_log_prepends = {
+  const std::map<Level, std::vector<std::string>> m_log_prepends = {
     {Level::INFO,
      {
-       "ℹ️: [INF] :",
-       "🤔: [INF] :",
+       "ℹ️",
+       "🤔",
      }},
     {Level::DEBUG,
      {
-       "🔧: [DEB] :",
-       "🤖: [DEB] :",
-       "🛠️: [DEB] :",
-       "🤓: [DEB] :",
+       "🔧",
+       "🤖",
+       "🛠️",
+       "🤓",
      }},
     {Level::ERROR,
      {
-       "💢: [ERR] :",
-       "🧑‍🚒: [ERR] :",
-       "🤦: [ERR] :",
+       "💢",
+       "🧑‍🚒",
+       "🤦",
      }},
     {Level::WARN,
      {
-       "⚠️: [WRN] :",
+       "⚠️",
      }},
   };
 
   // appending
-  std::map<Level, std::vector<std::string>> m_log_appends{
+  const std::map<Level, std::vector<std::string>> m_log_appends{
     {Level::INFO,
      {
        " - so far so good.",
