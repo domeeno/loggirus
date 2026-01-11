@@ -1,11 +1,5 @@
 #!/bin/bash
 
-set -e
+./compile.sh
 
-cd build
-
-cmake ..
-
-make
-
-./loggirus
+./build/loggirus

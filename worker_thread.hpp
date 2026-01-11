@@ -2,7 +2,6 @@
 #define WORKER_THREAD
 
 #include "concurrent_queue.hpp"
-#include "log_message.hpp"
 #include <condition_variable>
 #include <iostream>
 #include <thread>
@@ -19,9 +18,9 @@ public:
     m_process_thread = std::thread(&WorkerThread::process, this);
   }
 
-  void publish(LogMessage log_msg)
+  void publish(std::string &log)
   {
-    m_log_queue.push(log_msg);
+    m_log_queue.push(log);
     m_cond.notify_one();
   }
 
@@ -32,16 +31,16 @@ public:
 
     while (!m_log_queue.empty())
     {
-      std::cout << m_log_queue.pop().message << std::endl;
+      std::cout << m_log_queue.pop() << std::endl;
     }
   }
 
 private:
-  ConcurrentQueue<LogMessage> m_log_queue{};
-  std::thread                 m_process_thread{};
-  std::mutex                  m_mutex{};
-  bool                        m_running{true};
-  std::condition_variable     m_cond{};
+  ConcurrentQueue<std::string> m_log_queue{};
+  std::thread                  m_process_thread{};
+  std::mutex                   m_mutex{};
+  bool                         m_running{true};
+  std::condition_variable      m_cond{};
 
   void process()
   {
@@ -50,7 +49,7 @@ private:
       std::unique_lock<std::mutex> lock(m_mutex);
       m_cond.wait(lock, [this]() { return !m_log_queue.empty(); });
 
-      std::cout << m_log_queue.pop().message << std::endl;
+      std::cout << m_log_queue.pop() << std::endl;
     }
   };
 };
