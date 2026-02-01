@@ -61,7 +61,7 @@ Outputs:
     - answer: don't use multiple `<<` operators, they might be interleaved. Use a single `<<` operator per log line.
 - [x] Implement ThreadSafeQueue DS.
 - [x] Add debug, warn, error methods.
-- [ ] Improve randomness thing (doesn't work currently).
+- [x] Improve randomness thing (doesn't work currently).
 - [x] Make repo public.
 - [ ] Test impl in the field.
 - [x] Add screenshots/examples of the result.
