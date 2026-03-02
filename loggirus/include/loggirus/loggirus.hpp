@@ -1,27 +1,27 @@
 #ifndef LOGGIRUS_HPP
 #define LOGGIRUS_HPP
 
-#include "formatter.hpp"
-#include "level.hpp"
-#include "worker_thread.hpp"
+#include <loggirus/formatter.hpp>
+#include <loggirus/level.hpp>
+#include <loggirus/worker_thread.hpp>
 
 namespace domeeno
 {
 
-class Log
+class Logger
 {
 public:
-  Log() : m_log_level(Level::DEBUG)
+  Logger() : m_log_level(Level::DEBUG)
   {
     m_worker_thread.start();
   };
 
-  Log(Level l) : m_log_level(l)
+  Logger(Level l) : m_log_level(l)
   {
     m_worker_thread.start();
   };
 
-  ~Log()
+  ~Logger()
   {
   }
 

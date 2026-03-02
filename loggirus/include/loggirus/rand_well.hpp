@@ -1,8 +1,8 @@
 #ifndef RAND_WELL_HPP
 #define RAND_WELL_HPP
 
-#include "level.hpp"
 #include <array>
+#include <loggirus/level.hpp>
 #include <random>
 #include <string>
 #include <vector>

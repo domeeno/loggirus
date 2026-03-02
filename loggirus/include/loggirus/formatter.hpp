@@ -1,10 +1,10 @@
 #ifndef FORMATTER_HPP
 #define FORMATTER_HPP
 
-#include "level.hpp"
-#include "rand_well.hpp"
 #include <chrono>
 #include <format>
+#include <loggirus/level.hpp>
+#include <loggirus/rand_well.hpp>
 #include <string>
 
 namespace domeeno
@@ -35,14 +35,14 @@ public:
 
     std::string append = m_well.get_append(level);
 
-    return std::format(                       //
+    return std::format(                        //
       "{}: {} [{:%Y/%m/%d %H:%M}] [{}] {} {}", // format
-      OS_NAME,                                // OS
-      to_emoji(level),                        // emoji
-      std::chrono::system_clock::now(),       // time
-      to_string(level),                       // level
-      message,                                // message
-      append                                  // append
+      OS_NAME,                                 // OS
+      to_emoji(level),                         // emoji
+      std::chrono::system_clock::now(),        // time
+      to_string(level),                        // level
+      message,                                 // message
+      append                                   // append
     );
   }
 

@@ -1,7 +1,7 @@
 #ifndef LOG_MESSAGE_HPP
 #define LOG_MESSAGE_HPP
 
-#include "level.hpp"
+#include <loggirus/level.hpp>
 #include <string>
 
 namespace domeeno

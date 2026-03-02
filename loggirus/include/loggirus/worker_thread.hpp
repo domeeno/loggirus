@@ -1,7 +1,7 @@
 #ifndef WORKER_THREAD
 #define WORKER_THREAD
 
-#include "concurrent_queue.hpp"
+#include <loggirus/concurrent_queue.hpp>
 #include <condition_variable>
 #include <iostream>
 #include <thread>

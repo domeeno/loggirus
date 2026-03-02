@@ -4,7 +4,7 @@ int main()
 {
 
   {
-    domeeno::Log logger(domeeno::Level::DEBUG);
+    domeeno::Logger logger(domeeno::Level::DEBUG);
 
     logger.info("output of logging, [{}] [{}]!", "Hello", "World");
     logger.debug("operating system: {}", "name");
