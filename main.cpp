@@ -1,10 +1,9 @@
-#include "loggirus.hpp"
+#include "loggirus/include/loggirus/loggirus.hpp"
 
 int main()
 {
 
   {
-
     domeeno::Log logger(domeeno::Level::DEBUG);
 
     logger.info("output of logging, [{}] [{}]!", "Hello", "World");

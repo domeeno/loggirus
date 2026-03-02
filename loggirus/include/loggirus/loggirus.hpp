@@ -4,7 +4,6 @@
 #include "formatter.hpp"
 #include "level.hpp"
 #include "worker_thread.hpp"
-#include <format>
 
 namespace domeeno
 {
