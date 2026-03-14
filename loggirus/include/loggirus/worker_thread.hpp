@@ -1,9 +1,9 @@
 #ifndef WORKER_THREAD
 #define WORKER_THREAD
 
-#include <loggirus/concurrent_queue.hpp>
 #include <condition_variable>
 #include <iostream>
+#include <loggirus/concurrent_queue.hpp>
 #include <thread>
 
 namespace domeeno
@@ -18,7 +18,7 @@ public:
     m_process_thread = std::thread(&WorkerThread::process, this);
   }
 
-  void publish(std::string &log)
+  void publish(const std::string &log)
   {
     m_log_queue.push(log);
     m_cond.notify_one();
@@ -27,6 +27,7 @@ public:
   ~WorkerThread()
   {
     m_running = false;
+    m_cond.notify_all(); // fixes guaranteed deadlock when waiting for logs to process
     m_process_thread.join();
 
     while (!m_log_queue.empty())
@@ -39,7 +40,7 @@ private:
   ConcurrentQueue<std::string> m_log_queue{};
   std::thread                  m_process_thread{};
   std::mutex                   m_mutex{};
-  bool                         m_running{true};
+  std::atomic<bool>            m_running{true};
   std::condition_variable      m_cond{};
 
   void process()
@@ -47,9 +48,9 @@ private:
     while (m_running)
     {
       std::unique_lock<std::mutex> lock(m_mutex);
-      m_cond.wait(lock, [this]() { return !m_log_queue.empty(); });
+      m_cond.wait(lock, [this]() { return !m_log_queue.empty() && !m_running; });
 
-      std::cout << m_log_queue.pop() << std::endl;
+      std::cout << m_log_queue.pop() << "\n";
     }
   };
 };

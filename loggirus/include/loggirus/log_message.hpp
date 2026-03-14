@@ -9,8 +9,8 @@ namespace domeeno
 
 struct LogMessage
 {
-  Level       lvl;
-  std::string message;
+  const Level       lvl;
+  const std::string message;
 };
 
 } // namespace domeeno

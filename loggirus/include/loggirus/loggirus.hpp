@@ -28,35 +28,35 @@ public:
   template <class... Args>
   void debug(std::format_string<Args...> fmt, Args &&...args)
   {
-    log<Level::DEBUG>(std::move(fmt), std::forward<Args>(args)...);
+    log(Level::DEBUG, std::move(fmt), std::forward<Args>(args)...);
   }
 
   template <class... Args>
   void info(std::format_string<Args...> fmt, Args &&...args)
   {
-    log<Level::INFO>(std::move(fmt), std::forward<Args>(args)...);
+    log(Level::INFO, std::move(fmt), std::forward<Args>(args)...);
   }
 
   template <class... Args>
   void warn(std::format_string<Args...> fmt, Args &&...args)
   {
-    log<Level::WARN>(std::move(fmt), std::forward<Args>(args)...);
+    log(Level::WARN, std::move(fmt), std::forward<Args>(args)...);
   }
 
   template <class... Args>
   void error(std::format_string<Args...> fmt, Args &&...args)
   {
-    log<Level::ERROR>(std::move(fmt), std::forward<Args>(args)...);
+    log(Level::ERROR, std::move(fmt), std::forward<Args>(args)...);
   }
 
 private:
-  template <Level L, class... Args>
-  void log(std::format_string<Args...> fmt, Args &&...args)
+  template <class... Args>
+  void log(Level l, std::format_string<Args...> fmt, Args &&...args)
   {
-    if (m_log_level > L)
+    if (m_log_level > l)
       return;
 
-    std::string log = m_formatter.format(L, std::move(fmt), std::forward<Args>(args)...);
+    const std::string log = m_formatter.format(l, std::move(fmt), std::forward<Args>(args)...);
 
     m_worker_thread.publish(log);
   };

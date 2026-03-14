@@ -16,15 +16,12 @@ public:
   {
   }
 
-  std::string get_append(Level level)
+  const std::string &get_append(Level level)
   {
     const auto &pool = m_log_appends[to_index(level)];
-    if (pool.empty())
-    {
-      return {};
-    }
 
     std::uniform_int_distribution<std::size_t> dist(0, pool.size() - 1);
+
     return pool[dist(m_gen)];
   }
 
@@ -37,7 +34,7 @@ private:
 private:
   std::mt19937 m_gen;
 
-  std::array<std::vector<std::string>, 4> m_log_appends{{
+  const std::array<std::vector<std::string>, 4> m_log_appends{{
     /* DEBUG */
     {
       " - mathematical, don't you agree?",

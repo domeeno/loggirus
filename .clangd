@@ -1,3 +1,8 @@
 CompileFlags:
-  Remove: [-fmodules-ts, -fdeps-format=p1689r5, -fmodule-mapper=CMakeFiles/main.dir/main.cpp.o.modmap]
+  Remove: [
+    -fmodules-ts,
+    -fdeps-format=p1689r5,
+    -fmodule-mapper=CMakeFiles/main.dir/main.cpp.o.modmap,
+    -fmodule-mapper=CMakeFiles/main_loggirus.dir/main.cpp.o.modmap
+  ]
   CompilationDatabase: "build"

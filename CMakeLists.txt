@@ -19,7 +19,7 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 
 # Target to test loggirus
 add_executable(main_loggirus main.cpp)
-target_link_libraries(main_loggirus PRIVATE ${PROJECT_NAME}::${PROJECT_NAME})        
+target_link_libraries(main_loggirus PRIVATE ${PROJECT_NAME}::${PROJECT_NAME})
 
 target_compile_options(
   main_loggirus

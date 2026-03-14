@@ -1,4 +1,4 @@
-#include "loggirus/include/loggirus/loggirus.hpp"
+#include <loggirus/loggirus.hpp>
 
 int main()
 {

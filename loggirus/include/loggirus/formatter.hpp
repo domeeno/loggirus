@@ -4,7 +4,6 @@
 #include <chrono>
 #include <format>
 #include <loggirus/level.hpp>
-#include <loggirus/rand_well.hpp>
 #include <string>
 
 namespace domeeno
@@ -28,26 +27,19 @@ class Formatter
 {
 public:
   template <class... Args>
-  std::string format(Level level, std::format_string<Args...> fmt, Args &&...args)
+  const std::string format(Level level, std::format_string<Args...> fmt, Args &&...args)
   {
-
     std::string message = std::format(fmt, std::forward<Args>(args)...);
 
-    std::string append = m_well.get_append(level);
-
-    return std::format(                        //
-      "{}: {} [{:%Y/%m/%d %H:%M}] [{}] {} {}", // format
-      OS_NAME,                                 // OS
-      to_emoji(level),                         // emoji
-      std::chrono::system_clock::now(),        // time
-      to_string(level),                        // level
-      message,                                 // message
-      append                                   // append
+    return std::format(                     //
+      "{}: {} [{:%Y/%m/%d %H:%M}] [{}] {}", // format
+      OS_NAME,                              // OS
+      to_emoji(level),                      // emoji
+      std::chrono::system_clock::now(),     // time
+      to_string(level),                     // level
+      message                               // message
     );
   }
-
-private:
-  RandWell m_well{};
 };
 } // namespace domeeno
 #endif // FORMATTER_HPP
