@@ -35,9 +35,9 @@ constexpr std::string_view to_emoji(Level level)
   switch (level)
   {
   case Level::DEBUG:
-    return "ℹ️";
-  case Level::INFO:
     return "🛠️";
+  case Level::INFO:
+    return "ℹ️";
   case Level::WARN:
     return "💢";
   case Level::ERROR:

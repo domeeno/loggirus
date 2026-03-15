@@ -3,7 +3,7 @@
 
 #include <condition_variable>
 #include <iostream>
-#include <loggirus/concurrent_queue.hpp>
+#include <queue>
 #include <thread>
 
 namespace domeeno
@@ -20,37 +20,47 @@ public:
 
   void publish(const std::string &log)
   {
+    // TODO: Acquire and lock queue resource
+    // treat queue as resource
+    std::unique_lock<std::mutex> lock(m_mutex);
     m_log_queue.push(log);
     m_cond.notify_one();
   }
 
+  // destructor
   ~WorkerThread()
   {
     m_running = false;
     m_cond.notify_all(); // fixes guaranteed deadlock when waiting for logs to process
+
     m_process_thread.join();
 
     while (!m_log_queue.empty())
     {
-      std::cout << m_log_queue.pop() << std::endl;
+      std::cout << m_log_queue.front() << std::endl;
+      m_log_queue.pop();
     }
   }
 
 private:
-  ConcurrentQueue<std::string> m_log_queue{};
-  std::thread                  m_process_thread{};
-  std::mutex                   m_mutex{};
-  std::atomic<bool>            m_running{true};
-  std::condition_variable      m_cond{};
+  std::queue<std::string> m_log_queue{};
+  std::thread             m_process_thread{};
+  std::mutex              m_mutex{};
+  std::atomic<bool>       m_running{true};
+  std::condition_variable m_cond{};
 
   void process()
   {
     while (m_running)
     {
       std::unique_lock<std::mutex> lock(m_mutex);
-      m_cond.wait(lock, [this]() { return !m_log_queue.empty() && !m_running; });
+      m_cond.wait(lock, [this]() { return !m_log_queue.empty() || !m_running; });
 
-      std::cout << m_log_queue.pop() << "\n";
+      if (m_running)
+      {
+        std::cout << m_log_queue.front() << "\n";
+        m_log_queue.pop();
+      }
     }
   };
 };
